@@ -23,17 +23,50 @@
     display: flex;
   }
 
-  .#{$prefix}--btn-set > .#{$prefix}--btn {
-    // 196px from design kit
-    max-width: rem(196px);
-    width: 100%;
+  .#{$prefix}--btn-set--stacked {
+    flex-direction: column;
   }
 
-  .#{$prefix}--btn--secondary.#{$prefix}--btn--disabled
-    + .#{$prefix}--btn--primary.#{$prefix}--btn--disabled,
-  .#{$prefix}--btn--tertiary.#{$prefix}--btn--disabled
-    + .#{$prefix}--btn--danger.#{$prefix}--btn--disabled {
+  .#{$prefix}--btn-set .#{$prefix}--btn {
+    width: 100%;
+    // 196px from design kit
+    max-width: rem(196px);
+
+    &:not(:focus) {
+      box-shadow: rem(-1px) 0 0 0 $button-separator;
+    }
+
+    &:first-of-type:not(:focus) {
+      box-shadow: inherit;
+    }
+  }
+
+  .#{$prefix}--btn-set .#{$prefix}--btn:focus + .#{$prefix}--btn {
+    box-shadow: inherit;
+  }
+
+  .#{$prefix}--btn-set--stacked .#{$prefix}--btn:not(:focus) {
+    box-shadow: 0 rem(-1px) 0 0 $button-separator;
+  }
+
+  .#{$prefix}--btn-set--stacked .#{$prefix}--btn:first-of-type:not(:focus) {
+    box-shadow: inherit;
+  }
+
+  .#{$prefix}--btn-set .#{$prefix}--btn.#{$prefix}--btn--disabled {
     box-shadow: rem(-1px) 0 0 0 $disabled-03;
+
+    &:first-of-type {
+      box-shadow: none;
+    }
+  }
+
+  .#{$prefix}--btn-set--stacked .#{$prefix}--btn.#{$prefix}--btn--disabled {
+    box-shadow: 0 rem(-1px) 0 0 $disabled-03;
+
+    &:first-of-type {
+      box-shadow: none;
+    }
   }
 
   .#{$prefix}--btn {
@@ -106,8 +139,8 @@
     &.#{$prefix}--btn--disabled,
     &.#{$prefix}--btn--disabled:hover,
     &.#{$prefix}--btn--disabled:focus {
-      background: transparent;
       color: $disabled;
+      background: transparent;
       outline: none;
     }
   }
@@ -196,8 +229,8 @@
   }
 
   .#{$prefix}--btn--icon-only {
-    padding-left: rem(15px);
     padding-right: rem(15px);
+    padding-left: rem(15px);
 
     .#{$prefix}--btn__icon {
       position: static;
@@ -241,13 +274,13 @@
   }
 
   .#{$prefix}--btn--field.#{$prefix}--btn--icon-only {
-    padding-left: rem(11px);
     padding-right: rem(11px);
+    padding-left: rem(11px);
   }
 
   .#{$prefix}--btn--sm.#{$prefix}--btn--icon-only {
-    padding-left: rem(7px);
     padding-right: rem(7px);
+    padding-left: rem(7px);
   }
 
   .#{$prefix}--btn--danger {

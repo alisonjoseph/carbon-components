@@ -117,6 +117,11 @@ const carbonFlatpickrMonthSelectPlugin = (config) => (fp) => {
 export default class DatePicker extends Component {
   static propTypes = {
     /**
+     * The DOM element the Flatpicker should be inserted into. `<body>` by default.
+     */
+    appendTo: PropTypes.object,
+
+    /**
      * The child nodes.
      */
     children: PropTypes.node,
@@ -127,14 +132,9 @@ export default class DatePicker extends Component {
     className: PropTypes.string,
 
     /**
-     * `true` to use the short version.
+     * The date format.
      */
-    short: PropTypes.bool,
-
-    /**
-     * `true` to use the light version.
-     */
-    light: PropTypes.bool,
+    dateFormat: PropTypes.string,
 
     /**
      * The type of the date picker:
@@ -146,63 +146,63 @@ export default class DatePicker extends Component {
     datePickerType: PropTypes.oneOf(['simple', 'single', 'range']),
 
     /**
-     * The date format.
+     * `true` to use the light version.
      */
-    dateFormat: PropTypes.string,
+    light: PropTypes.bool,
 
     /**
-     *  The language locale used to format the days of the week, months, and numbers.
-     *
-     * * `ar` - Arabic
-     * * `at` - Austria
-     * * `be` - Belarusian
-     * * `bg` - Bulgarian
-     * * `bn` - Bangla
-     * * `cat` - Catalan
-     * * `cs` - Czech
-     * * `cy` - Welsh
-     * * `da` - Danish
-     * * `de` - German
-     * * `en` - English
-     * * `eo` - Esperanto
-     * * `es` - Spanish
-     * * `et` - Estonian
-     * * `fa` - Persian
-     * * `fi` - Finnish
-     * * `fr` - French
-     * * `gr` - Greek
-     * * `he` - Hebrew
-     * * `hi` - Hindi
-     * * `hr` - Croatian
-     * * `hu` - Hungarian
-     * * `id` - Indonesian
-     * * `it` - Italian
-     * * `ja` - Japanese
-     * * `ko` - Korean
-     * * `lt` - Lithuanian
-     * * `lv` - Latvian
-     * * `mk` - Macedonian
-     * * `mn` - Mongolian
-     * * `ms` - Malaysian
-     * * `my` - Burmese
-     * * `nl` - Dutch
-     * * `no` - Norwegian
-     * * `pa` - Punjabi
-     * * `pl` - Polish
-     * * `pt` - Portuguese
-     * * `ro` - Romanian
-     * * `si` - Sinhala
-     * * `sk` - Slovak
-     * * `sl` - Slovenian
-     * * `sq` - Albanian
-     * * `sr` - Serbian
-     * * `sv` - Swedish
-     * * `th` - Thai
-     * * `tr` - Turkish
-     * * `uk` - Ukrainian
-     * * `vn` - Vietnamese
-     * * `zh` - Mandarin
-     */
+                    *  The language locale used to format the days of the week, months, and numbers. The full list of supported locales can be found here https://github.com/flatpickr/flatpickr/tree/master/src/l10n
+                    *
+                    * `ar` - Arabic
+                     `at` - Austria
+                     `be` - Belarusian
+                     `bg` - Bulgarian
+                     `bn` - Bangla
+                     `cat` - Catalan
+                     `cs` - Czech
+                     `cy` - Welsh
+                     `da` - Danish
+                     `de` - German
+                     `en` - English
+                     `eo` - Esperanto
+                     `es` - Spanish
+                     `et` - Estonian
+                     `fa` - Persian
+                     `fi` - Finnish
+                     `fr` - French
+                     `gr` - Greek
+                     `he` - Hebrew
+                     `hi` - Hindi
+                     `hr` - Croatian
+                     `hu` - Hungarian
+                     `id` - Indonesian
+                     `it` - Italian
+                     `ja` - Japanese
+                     `ko` - Korean
+                     `lt` - Lithuanian
+                     `lv` - Latvian
+                     `mk` - Macedonian
+                     `mn` - Mongolian
+                     `ms` - Malaysian
+                     `my` - Burmese
+                     `nl` - Dutch
+                     `no` - Norwegian
+                     `pa` - Punjabi
+                     `pl` - Polish
+                     `pt` - Portuguese
+                     `ro` - Romanian
+                     `si` - Sinhala
+                     `sk` - Slovak
+                     `sl` - Slovenian
+                     `sq` - Albanian
+                     `sr` - Serbian
+                     `sv` - Swedish
+                     `th` - Thai
+                     `tr` - Turkish
+                     `uk` - Ukrainian
+                     `vn` - Vietnamese
+                     `zh` - Mandarin
+                    */
     locale: PropTypes.oneOf([
       'ar',
       'at',
@@ -258,6 +258,31 @@ export default class DatePicker extends Component {
     ]),
 
     /**
+     * The maximum date that a user can pick to.
+     */
+    maxDate: PropTypes.string,
+
+    /**
+     * The minimum date that a user can start picking from.
+     */
+    minDate: PropTypes.string,
+
+    /**
+     * The `change` event handler.
+     */
+    onChange: PropTypes.func,
+
+    /**
+     * The `close` event handler.
+     */
+    onClose: PropTypes.func,
+
+    /**
+     * `true` to use the short version.
+     */
+    short: PropTypes.bool,
+
+    /**
      * The value of the date value provided to flatpickr, could
      * be a date, a date number, a date string, an array of dates.
      */
@@ -273,31 +298,6 @@ export default class DatePicker extends Component {
       PropTypes.object,
       PropTypes.number,
     ]),
-
-    /**
-     * The DOM element the Flatpicker should be inserted into. `<body>` by default.
-     */
-    appendTo: PropTypes.object,
-
-    /**
-     * The `change` event handler.
-     */
-    onChange: PropTypes.func,
-
-    /**
-     * The `close` event handler.
-     */
-    onClose: PropTypes.func,
-
-    /**
-     * The minimum date that a user can start picking from.
-     */
-    minDate: PropTypes.string,
-
-    /**
-     * The maximum date that a user can pick to.
-     */
-    maxDate: PropTypes.string,
   };
 
   static defaultProps = {
@@ -336,7 +336,9 @@ export default class DatePicker extends Component {
           maxDate: maxDate,
           plugins: [
             datePickerType === 'range'
-              ? new carbonFlatpickrRangePlugin({ input: this.toInputField })
+              ? new carbonFlatpickrRangePlugin({
+                  input: this.toInputField,
+                })
               : () => {},
             appendTo
               ? carbonFlatpickrAppendToPlugin({
